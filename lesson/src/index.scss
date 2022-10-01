@@ -1,7 +1,31 @@
-body{
-  .avatar {
-    width: 150px;
-    height: 150px;
-    transform: translate(100px, 100px);
-  }
+@font-face {
+  font-family: "iconfont"; /* Project id 3683505 */
+  src: url('./font/iconfont.woff2') format('woff2'),
+       url('./font/iconfont.woff') format('woff'),
+       url('./font/iconfont.ttf') format('truetype');
 }
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zhifeiji:before {
+  content: "\ec25";
+}
+
+.icon-qiqiu:before {
+  content: "\ec2a";
+}
+
+.icon-huangguan:before {
+  content: "\ec3b";
+}
+
+.icon-xingqiu:before {
+  content: "\ec3e";
+}
+
