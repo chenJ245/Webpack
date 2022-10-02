@@ -148,3 +148,106 @@ npm i --save @babel/runtime-corejs2@7.2.0
 使用 babel 配置 react 的 代码 这个时候 页面上就会出现 hello world
 npm i react-dom@16.6.3 react@16.6.3 --save
 npm i @babel/preset-react@7.0.0 -D
+
+Tree Shaking 配置：
+
+"sideEffects": false, 写了指定的文件名就不对这个文件起作用 例如 ['@babel/polyfill'] false 就是全部打包，没有需要特殊处理的东西
+如果你引入的东西文件无作用 那么 Tree Shaking 也会忽略掉 例如 css 可以这样写 ['*.css']
+optimization: {
+usedExports: true
+}
+
+Develoment 和 Production 模式的区分打包
+Develoment 开发模式
+Production 线上模式
+模块区分 公用文件和区分文件 需要下载 npm i webpack-merge@4.1.5 -D
+
+Webpack 和 Code Splitting
+lodash 工具库 下载之后 引用之后 使用字符串方法
+npm i lodash@4.17.11 --save
+
+如果打包文件会很大，加载的时间会很长 如果这时候 修改些许代码 又会再打包出一个新的 main.js 他又会很大，如果用户又要重新访问我们的页面，又要加载 2mb 的内容
+
+optimization: {splitChunks: {chunks: all}} splitChunks: {chunks: all} 要帮助你做代码分割了 不需要要像上面又要 手动配置 而是输入 webpack 的配置
+
+异步获取 lodash 需要下载一个叫做 babel-plugin-dynamic-import-webpack 的库
+npm i babel-plugin-dynamic-import-webpack@1.1.0 -D 这个库不推荐使用 他不能使用魔法注释的功能
+
+代码分割，和 webpack 无关
+webpack 中实现代码分割，两种方式
+
+1. 同步代码： 只需要在 webpack.common.js 中做 optimization 的配置即可
+2. 异步代码(import)：异步代码无需做任何配置，会自动进行代码分割，放置到新的文件中
+
+babel 官方组件 npm i -D @babel/plugin-syntax-dynamic-import@7.2.0
+optimization: {
+splitChunks: {
+splitChunks: {
+chunks: 'all',
+minSize: 30000,
+maxSize: 50000, // 50kb
+minChunks: 1,
+maxAsyncRequests: 5,
+maxInitialRequests: 3,
+automaticNameDelimiter: '~',
+name: true,
+cachGroups: {
+vendors: {
+test: /[\\/]node_modules[\\/]/,
+priority: -10,
+filename: 'vendors.js'
+},
+default: {
+priority: -20,
+reuseExisttingChunk: true,
+filename: 'common.js'
+}
+}
+}
+}
+},
+可以配合魔法注释插件 但是会有一个头名字 需要配置 webpack.common.js 中的 optimization 的 splitChunks 参数
+cacheGroups: {vendors: false, default: false} 配置加上这两个就 会变成你魔法注释写的名字
+splitChunks 会有默认配置 配置的大体意思是 ：
+chunks: 'async' 代码分割的时候 只对异步代码生效 'all' 同步异步都生效 但是同步代码还是不会被分割因为 同步代码分割需要配置 'initial' 只对同步代码做分割
+cacheGroups 分组打包 里面包含 vendors 参数 vendors 里面有 test 库的格式处理 可以用 filename 来起一个别名 chunks 和 cacheGroups 是配合使用的
+minSize:30000 引入的文件或者库大于 30kb 的话 才会代码分割不然不会
+maxSize: 50000, 例如有 一个 1mb 的 lodash 文件 会尝试把 lodash 文件拆分成为 20 个 50kb 的文件 二次拆分
+走到这步之后就会去 vendors 因为他不在 node_modules 目录下 所以他不会去被打包到 vendors.js 文件 然后会走默认配置 default: false 如果是 false 则不不知道放在哪 需要配置 如果是其他配置 则会打包出一个 default~main.js 文件中
+
+minChunks: 1 就是模块被使用多少次之后才会被拆分 满足条件才会代码分割
+maxAsyncRequests： 5 最多只能加载五个请求 maxInitialRequests：3 入口文件最多 进行 3 次分割
+automaticNameDelimiter 文件中间的分隔符 例如 vendors~main.js
+name: true 使 cacheGroups 里面 的 filename 生效 cacheGroups 是一个缓存组 把符合组的文件全部打包到一起
+priority: -10 是优先级的意思 数字越大优先级越高
+reuseExisttingChunk：true 意思是 然后一个模块已经被打包过了就忽略那个被打包过的模块
+
+案例： 引入一个 lodash.js 文件
+他会按照上面所写走 但是当他走到 minChunks 的时候，要看这个 chunks(打包过后的文件)有没有被多个 chunks 依赖 如果依赖次数少于你 minChunks 写的值 那么这个 lodash 文件就不会被代码分割 不管他是同步还是异步
+不写就是默认值 这个 splitChunks 默认配置就是 上面一大堆
+
+描述文件 配合网上的链接可以查看你打包的模块的分布 以及大小 等等
+例如 打开这个文件的前提是生成 stats.json 文件 就是描述文件 然后去 webpack.github.io/ananalyse/ 这个路径下 然后选择 stas.json 文件就可以看项目的各项资料了
+还有图表模式 http://alexkuz.github.io/webpack-chart/ 一样的 选择描述文件 然后 就可以可视化图表了
+
+webpack 默认打包异步代码 因为 异步代码会减少代码的使用率 而且它认为同步代码打包在一起 意义不大
+在控制台使用 ctrl+Shift+P 输入 Coverage 就可以查看代码的使用率 和 监控代码 也可以查看别的网页的代码使用率
+打包的核心是 考虑怎么让代码的利用率提高
+
+chunkFilename 和 filename 入口文件走 filename 文件配置所以文件名和入口文件的配值相同，但是引入的文件是异步加载的文件的话，因为它不是入口文件，它是一个被异步加载的间接的一个文件，它会走 chunkFilename 配置因为 他会被分割，被分割之后他会是一个 chunk,他的文件名就不是直接配置的内容了而是 chunkFilename 的内容配置了
+
+npm i -D mini-css-extract-plugin@0.5.0
+css 文件分割 css 文件走 filename 配置 如果页面被直接引用 他必定是入口文件 如果他是间接被引入的文件 他就走 chunkFilename 文件配置 这个 css 插件默认会把两个文件打包到一个 main.css 文件中
+npm i optimize-css-assets-webpack-plugin@5.0.1 -D 合并打包 css 文件
+如果想让不同的文件对应不同的入口文件 就可以分组 使用 cacheGroups 分组进行打包 然后用 test 做传参 entry='入口文件的名字'，这样的话所有的入口文件统一打包到这个文件下面
+
+performance: false, 不提示性能错误
+new webpack.ProvidePlugin({
+$: 'jquery', // 如果我的一个模块中使用了 $ 这个字符串我就会在模块里自动的帮你引入 jquery
+})
+
+npm i imports-loader@0.8.0 -D 可以改变 this 指向的插件 需要配置 common module 中的 rules
+loader: 'imports-loader?this=>window'// 加载过程先走 Imports 然后改变 this 指向
+loader 使用多个的时候 需要使用 use:{} loader 则写在 use 这个对象中
+
+<!-- "dev-build": "webpack --profile --json > stats.json --config ./build/webpack.dev.js", -->
