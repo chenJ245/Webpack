@@ -277,3 +277,10 @@ npm 提交到远程 npm 官网 需要注册 npm 账号 然后在命令行 npm ad
 再使用 npm publish 提交你这个 package.json 文件 等需要使用这个文件的时候, 之间 npm i 你这个库的名字 例如我的这个库叫做 npm i library 但是每个库的名字是不可以一样的不然下次就会提交不上去会起冲突 这个时候就需要你去修改你 json 文件中的 name 了 例如你可以加一个时间
 
 Progressive Web Application PWA 打包配置
+需要改动 package.json 文件
+然后再下载一个 npm i http-server@0.11.1 --save-dev
+PWA 的技术如果你第一次访问网页访问成功，但是网站挂掉之后你再刷新他会有一个缓存你还是可以看到你之前看到的页面
+npm i workbox-webpack-plugin@3.6.3 -D 然后再去配置  
+先引入 const WorkboxPlugin = require('workbox-webpack-plugin');
+然后配置 plugins 需要 new WorkboxPlugin.GenerateSW({}) 全称叫做 serviceWorker GenerateSW 首字符要大写
+常用的两参数有 clientsClaim: true, skipWaiting: true 这个时候 dist 目录会多出两个文件 一个 service-wroker.js 一个 precache-manifest 的这两个文件 这样之后 我们的文件就可以支持 PWA 文件的要求 这样页面只要访问成一次就会有缓存 只要有缓存 页面就缓存住了 要加上一段业务代码 需要是配置 index.js 写一个判断 看有没有成功运行
