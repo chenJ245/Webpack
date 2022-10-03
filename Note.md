@@ -251,3 +251,29 @@ loader: 'imports-loader?this=>window'// 加载过程先走 Imports 然后改变 
 loader 使用多个的时候 需要使用 use:{} loader 则写在 use 这个对象中
 
 <!-- "dev-build": "webpack --profile --json > stats.json --config ./build/webpack.dev.js", -->
+
+Library 的打包
+libraryTarget: 'umd' 通用打包方式 不管什么配置都行
+
+1. es6 的方法引入 import library from 'library'
+2. cmd 的方法引入 const library = require('library');
+3. amd 的方法引入 require(['library'], function() {});
+
+需要使用 js src 引入的话 然后打点调用方法 需要配置 挂载到全局变量
+library: 'library' 4. <script src='library.js'></script> library.math
+libraryTarget: 'this' 或者 libraryTarget: 'window' 的话 都等于是挂载到全局上了
+
+externals: ["lodash"] 这个配置项 可以是一个数组 也可以是一个对象
+externals:{
+lodash: {
+root: '\_',
+commonjs: 'lodash'
+}
+}
+意思就是 如果我这个库在 common.js cmd 的方式 这个环境去使用 lodash 名字必须是 lodash
+加了 root 之后呢 就是你即不用 cmd 又不用 amd 而是 script 的 src 属性引入的话 那么你必须要有一个名字叫做 \_ 的全局变量 这样的话你的引入的 lodash 才能执行
+
+npm 提交到远程 npm 官网 需要注册 npm 账号 然后在命令行 npm adduser 然后去添加用户名和密码
+再使用 npm publish 提交你这个 package.json 文件 等需要使用这个文件的时候, 之间 npm i 你这个库的名字 例如我的这个库叫做 npm i library 但是每个库的名字是不可以一样的不然下次就会提交不上去会起冲突 这个时候就需要你去修改你 json 文件中的 name 了 例如你可以加一个时间
+
+Progressive Web Application PWA 打包配置
