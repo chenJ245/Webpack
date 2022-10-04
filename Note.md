@@ -291,3 +291,18 @@ ts 打包的配置
 npm i ts-loader@5.3.2 typescript@3.2.2 -D
 下载 ts 和 ts-loader 模块 而且打包 ts 文件的模块的时候 需要创建一个 ts.config.js 文件 然后在里面进行配置
 lodash 和 ts 引入的话 想让 lodash 的用法 严格的话 需要下载@types/lodash@4.14.119 这个模块 例如 lodash 的\_.join() 方法 如果你不传参数他就会报错 说你最少要传 1-2 的参数
+
+WebpackDevServer 实现请求转发
+npm i axios@0.18.0 -D
+axios 写 ajax 请求 使用 componentDidMount() {} 这个函数 里面使用 axios.get() 方法 发送请求获取数据 因为地址上面配好了跨区配置 无需再配置跨域 因为请求的地址不能是死的所有 需要使用 charles 或者 fiddler 起一个代理服务器，但是我们使用的是 webpack-dev-server 的形式开发的 只需要改 webpack.config.js 配置就行了 且其只在开发环境下有作用，在其他环境下无用
+
+webpackDevServer 解决单页面路由问题
+npm i react-router-dom@4.3.1 -D 这里使用的是 recat 编写的代码 引入这个 dom 之后 引入里面的方法 使用方法定义的组件进行代码的编译 <BrowserRouter> 下面要加一个 div 标签 做完这些之后 还实现不了单页面接口不同的问题 因为浏览器会认为你的路径是一个向后端请求的新的接口，所以我们要在 webpack.config.js 中的 derserver 这个对象中加上一个新的参数配置 historyApiFallback: true, 这个时候就可以单页面访问不同的路由了
+
+historyApiFallback: {
+rewrites: [{
+from: /abc.html/,
+to: '/index.html',
+}]
+}
+这个配置中呢 rewrites 的 from 是你在浏览器中输入的 url 而 to 呢 显示的确实 其他的页面 但是这个一般用来出来独特的页面
