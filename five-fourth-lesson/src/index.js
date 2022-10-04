@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route } from "react-router-dom";
 import ReactDOM from "react-dom";
 // import axios from 'axios';
 import Home from "./home";
@@ -20,12 +20,12 @@ class App extends Component {
 
       <BrowserRouter>
         <div>
-          <Route path='/' component={Home}></Route>
-          <Route path='/list' component={List}></Route>4
+          <Route path="/" component={Home} />
+          <Route path="/list" component={List} />
         </div>
       </BrowserRouter>
 
-    )
+    );
   }
 }
 

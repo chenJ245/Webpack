@@ -10,6 +10,7 @@ module.exports = {
     main: './src/index.js', // 入口文件 路径是后面的地址 文件名还是 main
   },
   devServer: { // webpack dev server 代码调试更方便
+    overlay: true, // 
     contentBase: './dist', // 启动服务的文件地址
     open: true, // 是否自动打开浏览器
     port: 8080, // 端口号
@@ -34,7 +35,12 @@ module.exports = {
     rules: [{
       test: /\.js$/,
       exclude: /node_modules/, // 忽略第三方模块的代码 可以加快打包速度
-      loader: 'babel-loader', // 配置放在 .babelrc 文件下
+      use: ['babel-loader', {
+        loader: 'eslint-loader',
+        options: {
+          fix: true,
+        }
+      }]
     }, {
       test: /\.(jpg|png|gif)$/,
       use: {
