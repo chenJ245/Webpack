@@ -284,3 +284,10 @@ npm i workbox-webpack-plugin@3.6.3 -D 然后再去配置
 先引入 const WorkboxPlugin = require('workbox-webpack-plugin');
 然后配置 plugins 需要 new WorkboxPlugin.GenerateSW({}) 全称叫做 serviceWorker GenerateSW 首字符要大写
 常用的两参数有 clientsClaim: true, skipWaiting: true 这个时候 dist 目录会多出两个文件 一个 service-wroker.js 一个 precache-manifest 的这两个文件 这样之后 我们的文件就可以支持 PWA 文件的要求 这样页面只要访问成一次就会有缓存 只要有缓存 页面就缓存住了 要加上一段业务代码 需要是配置 index.js 写一个判断 看有没有成功运行
+
+md 文件名 创建一个文件夹 type NUL > 文件名 在这层级目录下创建一个文件
+
+ts 打包的配置
+npm i ts-loader@5.3.2 typescript@3.2.2 -D
+下载 ts 和 ts-loader 模块 而且打包 ts 文件的模块的时候 需要创建一个 ts.config.js 文件 然后在里面进行配置
+lodash 和 ts 引入的话 想让 lodash 的用法 严格的话 需要下载@types/lodash@4.14.119 这个模块 例如 lodash 的\_.join() 方法 如果你不传参数他就会报错 说你最少要传 1-2 的参数
