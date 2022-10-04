@@ -306,3 +306,26 @@ to: '/index.html',
 }]
 }
 这个配置中呢 rewrites 的 from 是你在浏览器中输入的 url 而 to 呢 显示的确实 其他的页面 但是这个一般用来出来独特的页面
+
+代码格式规范 EsLint webpack 中的配置
+npm i eslint@5.12.0 -D 还需要配置文件 可以命令行直接生成 代码格式的文件 npx eslint --init
+这样的话 他会他问你答的方式选用模板 一般常用模板的使用的是 1 1 y javascript y 文件配置完成之后你的文件夹里面就会多出一个 .eslintrc.js 的文件 里面会有一些初始化的配置
+默认暴露 "extends": "airbnb"
+npm i babel-eslint@10.0.1 -D 需要配置的 parser
+npm i eslint-loader@2.1.1 -D
+force: 'pre' 在之前执行 在 use 对象的 options 参数中
+git 钩子勾选 会自动触发检测
+
+提升 Webpack 打包速度的方法
+优化的目标： 模块引入 只有第一次会打包 后面就直接用打包好的就行 引入第三方文件的时候，要去使用 dll 文件引入
+
+1. 跟上技术的迭代 (Node, Npm, Yarn) 使用这些工具的最新版本 打包的速度就更快
+2. 在尽可能少的模块上应用 Loader
+3. Plugin 尽可能精简并确保可靠
+4. resolve 参数合理配置 -- 例如文件引入 /默认引入 index 文件
+5. 使用 DllPlugin 提高打包速度 配合插件使用 npm i add-asset-html-webpack-plugin@3.1.2 -D
+6. 控制包文件大小
+7. thread-loader,parallel-webpack,happypack 多进程打包
+8. 合理使用 sourceMap
+9. 结合 stats 分析打包结果
+10. 开发环境内存编译 无用插件剔除
