@@ -329,3 +329,8 @@ git 钩子勾选 会自动触发检测
 8. 合理使用 sourceMap
 9. 结合 stats 分析打包结果
 10. 开发环境内存编译 无用插件剔除
+
+安装这个插件可以直接代替 loader 里面的 this.query 这个工具用来分析传过来的参数
+npm i loader-utils@1.2.3 -D
+npm i @babel/traverse@7.2.3 -D
+npm i @babel/parser@7.2.3 -D
